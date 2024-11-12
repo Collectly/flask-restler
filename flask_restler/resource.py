@@ -11,7 +11,6 @@ from typing import Iterable, Optional
 
 from apispec import yaml_utils
 from flask import Response, abort, current_app, request
-from flask._compat import with_metaclass
 from flask.json import dumps
 from flask.views import View
 
@@ -108,7 +107,7 @@ class ResourceMeta(type):
         return cls
 
 
-class Resource(with_metaclass(ResourceMeta, View)):
+class Resource(View, metaclass=ResourceMeta):
 
     OPTIONS_CLASS = ResourceOptions
 
