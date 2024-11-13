@@ -6,7 +6,6 @@ from flask.testing import FlaskClient
 
 from flask_restler import Api, logger
 
-
 logger.setLevel('DEBUG')
 logger.addHandler(logging.StreamHandler())
 
@@ -61,5 +60,4 @@ def app():
 @pytest.fixture(scope='function')
 def api(app):
     api = Api('REST API', __name__, url_prefix="/api/v1")
-    api.register(app)
     return api

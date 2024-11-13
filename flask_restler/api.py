@@ -66,10 +66,6 @@ class Api(Blueprint):
             def specs_html(*args, **kwargs):  # noqa
                 return Response(render_template("swagger.html"))
 
-        import uuid
-
-        options = options or {}
-        options["name"] = uuid.uuid4().hex
         return super(Api, self).register(app, options or {})
 
     def authorize(self, *args, **kwargs):
@@ -133,13 +129,6 @@ class Api(Blueprint):
 
             if url_detail:
                 api.add_url_rule(url_detail_, view_func=view_func, **options)
-
-            if api.app is not None:
-                import uuid
-
-                _options = {}
-                _options["name"] = uuid.uuid4().hex
-                Blueprint.register(api, api.app, _options)
 
             return res
 

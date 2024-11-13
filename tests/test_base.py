@@ -12,6 +12,8 @@ def test_simple_view(app, api, client):
     def view(*args, **kwargs):
         return {"ok": True}
 
+    api.register(app)
+
     assert view.methods == {"GET", "POST"}
 
     response = client.get("/api/v1/simple")
@@ -27,6 +29,8 @@ def test_response(app, api, client):
     @api.route("/response", methods=["GET", "POST"])
     def view(*args, **kwargs):
         return Response("OK")
+
+    api.register(app)
 
     response = client.get("/api/v1/response")
     assert response.data == b"OK"
@@ -52,6 +56,8 @@ def test_resource(app, api, client):
         def get(self, resource=None, name=None, **kwargs):
             return "Hello, %s! How are you?" % name.title()
 
+    api.register(app)
+
     response = client.get("/api/v1/hello")
     assert response.json == "Hello, World!"
 
@@ -65,7 +71,7 @@ def test_resource(app, api, client):
     assert response.json == "Hello, Mike! How are you?"
 
 
-def test_resource2(api, client):
+def test_resource2(api, app, client):
 
     from flask import request
 
@@ -102,6 +108,8 @@ def test_resource2(api, client):
         @route("/custom22/test", methods=["get", "post"])
         def custom2(self, **kwargs):
             return {"json": True}
+
+    api.register(app)
 
     assert SecondResource.meta.endpoints
 
@@ -143,7 +151,7 @@ def test_resource2(api, client):
     assert SecondResource.meta.strict == set(["where", "sort", "page", "per_page"])
 
 
-def test_pagination(api, client):
+def test_pagination(api, app, client):
     from flask_restler import Resource
 
     DATA = list(range(1, 100))
@@ -157,6 +165,8 @@ def test_pagination(api, client):
         def get_many(self, **kwargs):
             return DATA
 
+    api.register(app)
+
     response = client.get("/api/v1/test")
     assert len(response.json) == 20
 
@@ -165,7 +175,7 @@ def test_pagination(api, client):
     assert response.json[0] == 41
 
 
-def test_specs(api, client):
+def test_specs(api, app, client):
     from flask_restler import Resource, route
 
     @api.route
@@ -177,6 +187,8 @@ def test_specs(api, client):
 
         def get(self, resource=None, **kwargs):
             return "Hello, %s!" % (resource and resource.title() or "World")
+
+    api.register(app)
 
     response = client.get("/api/v1/_specs")
     assert response.json
