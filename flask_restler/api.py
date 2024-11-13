@@ -1,24 +1,19 @@
 from __future__ import absolute_import
 
 from flask import Blueprint, jsonify, request, render_template, json, Response
-from flask._compat import string_types, PY2
 import os
 import urllib
 import warnings
 from inspect import isclass
 
-from . import APIError
-from .auth import current_user
+from flask_restler import APIError
+from flask_restler.auth import current_user
 
-from .resource import Resource
+from flask_restler.resource import Resource
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
-#  from apispec.ext.marshmallow.swagger import schema2jsonschema
 
-if PY2:
-    urlencode = urllib.urlencode
-else:
-    urlencode = urllib.parse.urlencode
+urlencode = urllib.parse.urlencode
 
 
 DEFAULT = object()
@@ -60,7 +55,7 @@ class Api(Blueprint):
             def specs_html(*args, **kwargs): # noqa
                 return Response(render_template('swagger.html'))
 
-        return super(Api, self).register(app, options or {}, first_registration)
+        return super(Api, self).register(app, options or {})
 
     def authorize(self, *args, **kwargs):
         """Make authorization process.
@@ -115,15 +110,12 @@ class Api(Blueprint):
             if url_detail:
                 api.add_url_rule(url_detail_, view_func=view_func, **options)
 
-            if api.app is not None:
-                Blueprint.register(api, api.app, {}, False)
-
             return res
 
         if resource is not None and isinstance(resource, type) and issubclass(resource, Resource):
             return wrapper(resource)
 
-        elif isinstance(resource, string_types):
+        elif isinstance(resource, str):
             url = resource
 
         return wrapper

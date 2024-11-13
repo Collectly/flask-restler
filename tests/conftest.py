@@ -61,5 +61,4 @@ def app():
 @pytest.fixture(scope='function')
 def api(app):
     api = Api('REST API', __name__, url_prefix="/api/v1")
-    api.register(app)
     return api

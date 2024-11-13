@@ -64,6 +64,8 @@ def test_resource(app, api, client, sa_session):
         def get_many(self, **kwargs):
             """Join on Role for roles filters."""
             return sa_session.query(User).outerjoin(User.role)
+    
+    api.register(app)
 
     role = Role(name='test')
     sa_session.add(role)

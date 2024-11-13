@@ -3,7 +3,7 @@
 import json
 import operator
 
-from cached_property import cached_property
+from functools import cached_property
 from flask import request
 from marshmallow import fields, missing, ValidationError
 from . import logger

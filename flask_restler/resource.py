@@ -2,15 +2,13 @@
 
 from __future__ import absolute_import
 
-import collections
 import logging
 import math
 import re
-from typing import Optional
+from typing import Iterable, Optional
 
 from apispec import yaml_utils
 from flask import request, current_app, abort, Response
-from flask._compat import with_metaclass
 from flask.json import dumps
 from flask.views import View
 
@@ -63,7 +61,7 @@ class ResourceOptions(object):
             self.specs = dict(self.specs)
 
         if self.strict:  # noqa
-            if not isinstance(self.strict, collections.Iterable):
+            if not isinstance(self.strict, Iterable):
                 self.strict = INTERNAL_ARGS
             self.strict = set(self.strict) | INTERNAL_ARGS
 
@@ -101,7 +99,7 @@ class ResourceMeta(type):
         return cls
 
 
-class Resource(with_metaclass(ResourceMeta, View)):
+class Resource(View, metaclass=ResourceMeta):
 
     OPTIONS_CLASS = ResourceOptions
 

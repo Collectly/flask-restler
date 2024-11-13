@@ -33,6 +33,8 @@ def test_runner(app, api, client):
         def post(self, *args, **kwargs):
             return 'POST'
 
+    api.register(app)
+
     with pytest.raises(APIError):
         response = api.run(TestResource)
 
